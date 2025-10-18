@@ -47,6 +47,7 @@ jobs:
           terraform_version: ${{ env.terraform_version }}
       
       - name: Terraform fmt
+        if: ${{ !inputs.is_apply }}
         id: fmt
         run: terraform fmt -check
         continue-on-error: true
@@ -56,6 +57,7 @@ jobs:
         run: terraform init -input=false
 
       - name: Terraform Validate
+        if: ${{ !inputs.is_apply }}
         id: validate
         run: terraform validate -no-color
 
