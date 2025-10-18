@@ -47,6 +47,7 @@ jobs:
           terraform_version: ${{ env.terraform_version }}
       
       - name: Terraform fmt
+        if: ${{ !inputs.is_apply }}
         id: fmt
         run: terraform fmt -check
         continue-on-error: true
@@ -56,6 +57,7 @@ jobs:
         run: terraform init -input=false
 
       - name: Terraform Validate
+        if: ${{ !inputs.is_apply }}
         id: validate
         run: terraform validate -no-color
 
@@ -126,10 +128,10 @@ jobs:
         id: apply
         if: ${{ inputs.is_apply }}
         run: |
-          terraform apply -auto-approve
+          terraform apply -no-color -auto-approve
 
       - uses: actions/github-script@v7
-        if: ${{ inputs.is_apply }} && ${{ inputs.env == 'dev' }}
+        if: ${{ inputs.is_apply && inputs.env == 'dev' }}
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
