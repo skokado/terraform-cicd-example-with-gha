@@ -7,6 +7,7 @@ on:
     paths:
       - "envs/dev/**"
       - "module/**"
+      - ".github/workflows/terraform-dev.yaml"
       - "!*.md"
 
   issue_comment:
