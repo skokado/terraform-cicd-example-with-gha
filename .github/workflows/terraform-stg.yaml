@@ -8,6 +8,7 @@ on:
       - "envs/stg/**"
       - "module/**"
       - ".github/workflows/terraform-stg.yaml"
+      - ".github/workflows/reusable-job-terraform.yaml"
       - "!*.md"
   pull_request:
     branches:

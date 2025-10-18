@@ -8,6 +8,7 @@ on:
       - "envs/dev/**"
       - "module/**"
       - ".github/workflows/terraform-dev.yaml"
+      - ".github/workflows/reusable-job-terraform.yaml"
       - "!*.md"
 
   issue_comment:

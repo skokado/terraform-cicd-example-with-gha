@@ -122,15 +122,14 @@ jobs:
               })
             }
 
-      # --- terraform apply (IssueOps)
       - name: "Terraform apply"
         id: apply
         if: ${{ inputs.is_apply }}
         run: |
-          terraform apply -auto-approve -var-file ./envs/${{ inputs.env }}/terraform.tfvars
+          terraform apply -auto-approve
 
       - uses: actions/github-script@v7
-        if: ${{ inputs.is_apply }}
+        if: ${{ inputs.is_apply }} && ${{ inputs.env == 'dev' }}
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
