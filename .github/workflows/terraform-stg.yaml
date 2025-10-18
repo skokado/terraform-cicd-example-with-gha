@@ -1,0 +1,33 @@
+name: "Terraform (stg)"
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "envs/stg/**"
+      - "module/**"
+      - "!*.md"
+  pull_request:
+    branches:
+      - main
+    paths:
+      - "envs/stg/**"
+      - "module/**"
+      - "!*.md"
+
+jobs:
+  terraform:
+    uses: ./.github/workflows/reusable-job-terraform.yaml
+    with:
+      env: "stg"
+      working_dir: "envs/stg"
+      aws_role_arn: "arn:aws:iam::12345678910:role/my-cicd-role-stg"
+      aws_region: "ap-northeast-1"
+      is_apply: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
+    secrets: inherit
+    permissions:
+      id-token: write
+      contents: read
+      actions: read
+      pull-requests: write
