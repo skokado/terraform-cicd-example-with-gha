@@ -35,7 +35,7 @@ jobs:
 
       - name: Configure AWS Credentials
         # skip because example
-        if: !always()
+        if: ${{ false }}
         uses: aws-actions/configure-aws-credentials@v5.1.0
         with:
           aws-region: ${{ inputs.aws_region }}
