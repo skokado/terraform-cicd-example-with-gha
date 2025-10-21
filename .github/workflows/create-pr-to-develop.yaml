@@ -1,0 +1,38 @@
+name: 'Create PR to develop'
+
+on:
+  issue_comment:
+    types: [created]
+
+jobs:
+  pr_commented:
+    name: Create Pull Request for develop
+    if: |
+      github.event.comment.body == '/pr develop' &&
+      github.actor != 'dependabot[bot]' &&
+      github.event.sender != 'github-actions[bot]' &&
+      github.event.issue.pull_request
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v5
+      - name: Extract Pull Request Number
+        id: pr-number
+        run: |
+          PR_URL=${{ github.event.comment.html_url }}
+          PR_NUMBER=$(echo $PR_URL | sed -n 's|.*/\([0-9]*\)#.*|\1|p')
+          echo "number=$PR_NUMBER" >> $GITHUB_OUTPUT
+
+      - name: Fetch Head Branch Name
+        id: head-branch
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          HEAD_BRANCH=$(gh pr view ${{ steps.pr-number.outputs.number }} --json headRefName -q '.headRefName')
+          echo "name=$HEAD_BRANCH" >> $GITHUB_OUTPUT
+
+      - name: Create PullRequest
+        env:
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh pr create --base develop --head ${{ steps.head-branch.outputs.name }} --title "[develop] #${{ steps.pr-number.outputs.number }} ${{ steps.head-branch.outputs.name }}" --body "#${{ steps.pr-number.outputs.number }}" --reviewer ${{ github.event.sender.login }} || true
